@@ -1,0 +1,63 @@
+<div class="pb-100">
+    <app-navbar2></app-navbar2>
+</div>
+
+<div class="liton__shoping-cart-area mb-120">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shoping-cart-inner">
+                    <div class="shoping-cart-table table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr *ngFor="let item of cartItems">
+                                    <td (click)="deleteCartItem(item)" class="cart-product-remove">x</td>
+                                    <td class="cart-product-image">
+                                        <img src="assets/Images/{{item.imagename}}" alt="#">
+                                    </td>
+                                    <td class="cart-product-info">
+                                        <h4><a href="product-details.html">{{item.medicinename}}</a></h4>
+                                    </td>
+                                    <td class="cart-product-price">${{item.medicineprice}}</td>
+                                    <td class="cart-product-quantity">
+                                        <div class="">
+                                          <button class="dec qtybutton" (click)="decrement(item)">-</button>
+                                          <input type="text" [value]="item.quantity" name="qtybutton" class="cart-plus-minus-box">
+                                          <button class="inc qtybutton" (click)="increment(item)">+</button>
+                                        </div>
+                                      </td>
+                                    <td class="cart-product-subtotal">${{item.medicineprice*item.quantity}}</td>
+                                </tr>
+                          
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="shoping-cart-total mt-50">
+                        <h4>Cart Totals</h4>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Cart Subtotal</td>
+                                    <td>${{cartTotalPrice}}</td>
+                                </tr>
+                             
+                            
+                                <tr>
+                                    <td><strong>Order Total</strong></td>
+                                    <td><strong>${{cartTotalPrice}}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="btn-wrapper text-right">
+                            <button class="theme-btn-1 btn btn-effect-1" [disabled]="cartTotalPrice==0" (click)="SendOrder()" >Submit Order for Approval</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pt-200">
+    <app-footer></app-footer>
+
+  </div>

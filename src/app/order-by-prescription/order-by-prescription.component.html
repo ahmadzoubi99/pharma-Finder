@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+</head>
+
+<body>
+
+  <div class="pb-100">
+    <app-navbar2></app-navbar2>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h1>Prescription</h1>
+        <form>
+
+          <div class="mb-3">
+            <label for="prescription" class="form-label">Upload Prescription Of The Product You Need</label>
+            <input type="file" #fileInput (change)="upload(fileInput.files)" class="form-control" accept=".pdf" id="prescription">
+          </div>
+        
+          <div class="mb-3">
+            <label for="order" class="form-label">Or Type Your Order</label>
+            <input type="text" (change)="disableUpload()" #orderInput  class="form-control" id="order" placeholder="Ex. Panadol" [formControl]="txtInput" >
+          </div>
+
+          <div class="text-center"> <button type="submit" [disabled]="!(orderInput.value || fileInput.files?.length!=0)" (click)="search()" class="btn btn-success">Search</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-6">
+
+        <h1>How To Order A Prescription</h1>
+        <div class="container mt-5">
+          <div class="text-center"> <img src="assets/HomeAssets/img/process.png" alt="img">
+          </div>  
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-200">
+    <app-footer></app-footer>
+
+  </div>
+</body>
+
+</html>

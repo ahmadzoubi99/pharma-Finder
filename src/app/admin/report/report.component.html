@@ -1,0 +1,230 @@
+<link href="https://cdn.datatables.net/1.11.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.dataTables.min.css" rel="stylesheet" />
+<body class="admin-body">
+<div class="container-scroller">
+  <app-navbar></app-navbar>
+  <div class="container-fluid page-body-wrapper">
+  <app-sidebar></app-sidebar>
+
+
+<div class="container col-10" style="margin-top: 5%;">
+    <div class="p-2 bg-light text-white text-center font-weight-bold" style="font-size: 40px;">Sales Reports</div>
+
+    <div class="row" id="total">
+      <div class="col-3 m-5">
+          <div class="card border-success" style="min-width: 9rem;background-color: rgba(49, 195, 129, 0.638);">
+            <div class="card-header fw-bold">
+              <h2><i class="fas fa-chart-bar"></i> Total Sales</h2><h3>Monthly</h3>
+                  <h5 class="card-title" style="align-items: center; text-align: center; margin-top: 25px;">{{MonthlySalesCount}}</h5>
+              </div>
+          </div>
+      </div>
+      <div class="col-3 m-5">
+          <div class="card border-success mb-1" style="min-width: 9rem;background-color: rgba(49, 195, 129, 0.638);">
+              <div class="card-header fw-bold">
+                <h2><i class="fas fa-chart-bar"></i> Total Sales</h2><h3>Annual</h3>
+                  <h5 class="card-title" style="align-items: center; text-align: center; margin-top: 25px;">{{AnnualSalesCount}}</h5>
+              </div>
+          </div>
+      </div>
+  </div>
+
+<div class="mb-5 col">
+        
+  <div class="row" id="all-search-container">
+    <div class="col-md-6">
+        <form (ngSubmit)="getSalesByMonthReport(selectedMonth, selectedYear)">
+            <h2>Monthly / Annual Report:</h2>
+            <div class="search-container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="month">Month:</label><br>
+                        <input type="number" id="month" name="month" placeholder="month" [(ngModel)]="selectedMonth" required class="search-input" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="year">Year:</label><br>
+                        <input type="number" id="year" name="year" placeholder="year" [(ngModel)]="selectedYear" required class="search-input" />
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <ng-container *ngIf="selectedMonth!=null && selectedYear!=null">
+                            <button id="button" type="submit" (click)="getSalesByMonthReport(selectedMonth, selectedYear)" style="background-color: rgb(39, 182, 120); color: white; border-radius: 5px; font-size: 15px; padding: 5px 15px;">Filter</button>
+                        </ng-container>
+                        <ng-container *ngIf="selectedMonth==null && selectedYear!=null">
+                            <button id="button" type="submit" (click)="getSalesByYearReport(selectedYear)" style="background-color: rgb(39, 182, 120); color: white; margin-left: 10px; border-radius: 5px; font-size: 15px; padding: 5px 15px;">Filter</button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-5 search-b-container">
+        <h2>Search:</h2>
+        <div class="search-container">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="dateFrom">From:</label>
+                    <input type="date" id="dateFrom" [(ngModel)]="dateFrom" class="search-b-input" />
+                </div>
+                <div class="col-md-6">
+                    <label for="dateTo">To: </label><br>
+                    <input type="date" id="dateTo" [(ngModel)]="dateTo" class="search-b-input" />
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col">
+                    <button id="button" (click)="searchSales(dateFrom, dateTo)" style="background-color: rgb(39, 182, 120); color: white; border-radius: 5px; font-size: 15px; padding: 5px 15px;">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+      <div class="container mt-3" *ngIf="isMonthlyReport || isAnnualReport || isSearchResults">
+
+        <div class="row">
+
+        <div *ngIf="isMonthlyReport && monthlyReport.length > 0" class="col-9 mt-1">
+          <!-- <h2>Monthly Report</h2> -->
+          <table datatable [dtOptions]="dtOptions" class="table table-hover">
+            <thead>
+          <tr>
+            <th>#</th>
+            <th>Order Date</th>
+            <th>Order Value</th>
+            <th>Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of monthlyReport; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{ item.orderdate | date }}</td>
+                <td>${{ item.orderprice }}</td>
+                <td>{{ item.quantity }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="isAnnualReport && annualReport.length > 0" class="col-9 mt-1">
+        <!-- <h2>Annual Report</h2> -->
+        <table datatable [dtOptions]="dtOptions" class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Order Date</th>
+              <th>Order Value</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of annualReport; let i = index">
+              <td>{{i+1}}</td>
+              <td>{{ item.orderdate | date }}</td>
+              <td>${{ item.orderprice }}</td>
+              <td>{{ item.quantity }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <div *ngIf="isSearchResults && searchResults.length > 0" class="col-9 mt-1">
+        <!-- <h2>Search Results</h2> -->
+        <table datatable [dtOptions]="dtOptions" class="table table-hover">
+          <thead>
+      <tr>
+        <th>#</th>
+        <th>Order Date</th>
+        <th>Order Value</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of searchResults; let i = index">
+        <td>{{i+1}}</td>
+        <td>{{ item.orderdate | date }}</td>
+        <td>${{ item.orderprice }}</td>
+        <td>{{ item.quantity }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div *ngIf="(isSearchResults && searchResults.length == 0 ) || (isAnnualReport && annualReport.length == 0) || (isMonthlyReport && monthlyReport.length == 0)" class="col-8">
+  <table class="table text-wrap mb-0 align-middle" id="table-data">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Order Date</th>
+      <th>Order Value</th>
+      <th>Quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td colspan="4" style="align-content: center; text-align: center;">
+        No data available for the selected month and year.
+      </td>
+    </tr>
+    </tbody>
+    </table>
+</div>
+
+
+
+
+
+</div>
+
+
+<div class="row mt-5">
+  <div class="col-12 col-md-6 col-lg-2 mb-3">
+    <button class="btn btn-custom-pdf btn-block" (click)="exportToPDF()">Download as PDF <i class="fas fa-file-pdf"></i></button>
+  </div>
+  <div class="col-12 col-md-6 col-lg-2 mb-3">
+    <button class="btn btn-custom-excel btn-block" (click)="exportToExcel()">Download as Excel <i class="fas fa-file-excel"></i></button>
+  </div>
+</div>
+
+</div>
+
+
+</div>
+
+<div class="row">
+  <div class="col-5 m-3">
+<canvas id="AnnualReport">
+
+</canvas>
+</div>
+<div class="col-5 m-3">
+<canvas id="MonthlyReport">
+
+</canvas>
+</div>
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+<div style="margin-left: -15%; width: 96.5%;">
+  <app-footer></app-footer>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js" defer></script>
+<script src="https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js" defer></script>
